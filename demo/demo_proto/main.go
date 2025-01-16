@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net"
 	"time"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
+	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/demo/demo_proto/conf"
 	"github.com/py/biz-demo/gomall/demo/demo_proto/kitex_gen/pbapi/echoservice"
 	"go.uber.org/zap/zapcore"
@@ -37,6 +39,13 @@ func kitexInit() (opts []server.Option) {
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
+
+	//service find
+	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
+	if err != nil {
+		log.Fatal(err)
+	}
+	opts = append(opts, server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()
