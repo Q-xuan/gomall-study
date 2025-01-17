@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/py/biz-demo/gomall/demo/demo_proto/biz/model"
 	"github.com/py/biz-demo/gomall/demo/demo_proto/conf"
 
 	"gorm.io/driver/mysql"
@@ -16,13 +17,13 @@ var (
 )
 
 func Init() {
-	fmt.Sprintf(conf.GetConf().MySQL.DSN,
+	dsn := fmt.Sprintf(conf.GetConf().MySQL.DSN,
 		os.Getenv("MYSQL_USER"),
 		os.Getenv("MYSQL_PASSWORD"),
 		os.Getenv("MYSQL_HOST"),
 		os.Getenv("MYSQL_DATEBASE"),
 	)
-	DB, err = gorm.Open(mysql.Open(conf.GetConf().MySQL.DSN),
+	DB, err = gorm.Open(mysql.Open(dsn),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
@@ -31,4 +32,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+
+	DB.AutoMigrate(&model.User{})
+	fmt.Printf("%#v\n", DB.Debug().Exec("select version()"))
 }
