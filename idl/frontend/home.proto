@@ -10,6 +10,6 @@ message Empty {}
 
 service HomeService {
   rpc Home(Empty) returns(Empty) {
-    option (api.get) = "/hello";
+    option (api.get) = "/";
   }
 }

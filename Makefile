@@ -12,4 +12,4 @@ demo-link-fix:
 
 .PHONY: gen-frontend
 gen-frontend:
-	@cd app/fontend && cwgo server --type HTTP --idl ..\..\idl\frontend\home.proto  --service frontend --module github.com/py/biz-demo/gomall/app/frontend -I ..\..\idl\
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/home.proto  --service frontend --module github.com/py/biz-demo/gomall/app/frontend -I ../../idl/
