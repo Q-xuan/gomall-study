@@ -11,9 +11,9 @@ import (
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
-	"github.com/py/biz-demo/gomall/demo/demo_proto/biz/dal"
 	"github.com/py/biz-demo/gomall/demo/demo_proto/conf"
 	"github.com/py/biz-demo/gomall/demo/demo_proto/kitex_gen/pbapi/echoservice"
+	"github.com/py/biz-demo/gomall/demo/demo_proto/middleware"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -22,7 +22,7 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
-	dal.Init()
+	// dal.Init()
 
 	opts := kitexInit()
 
@@ -40,14 +40,14 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
+	opts = append(opts, server.WithServiceAddr(addr), server.WithMiddleware(middleware.Middleware))
 
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
 
-	//service find
+	// service find
 	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
 		log.Fatal(err)
