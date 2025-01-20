@@ -7,14 +7,14 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/service"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/utils"
-	home "github.com/py/biz-demo/gomall/app/frontend/hertz_gen/frontend/home"
+	common "github.com/py/biz-demo/gomall/app/frontend/hertz_gen/frontend/common"
 )
 
 // Home .
 // @router /hello [GET]
 func Home(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req home.Empty
+	var req common.Empty
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
@@ -27,6 +27,6 @@ func Home(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	c.HTML(consts.StatusOK, "home.tmpl", resp)
-	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+	c.HTML(consts.StatusOK, "home", utils.WarpResponse(ctx, c, resp))
+	// utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
