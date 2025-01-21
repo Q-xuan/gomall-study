@@ -23,6 +23,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/router"
 	"github.com/py/biz-demo/gomall/app/frontend/conf"
+	"github.com/py/biz-demo/gomall/app/frontend/middlware"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -99,4 +100,6 @@ func registerMiddleware(h *server.Hertz) {
 
 	// cores
 	h.Use(cors.Default())
+
+	middlware.Register(h)
 }
