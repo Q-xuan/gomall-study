@@ -26,6 +26,7 @@ go.work.sum
 .env
 
 app/*/test
+app/frontend/conf/test/
 
 *.yml
 *.o
