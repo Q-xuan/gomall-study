@@ -46,8 +46,11 @@ func main() {
 	h.LoadHTMLGlob("template/*")
 	h.Static("/static", "./")
 
+	h.GET("/about", middlware.Auth(), func(c context.Context, ctx *app.RequestContext) {
+		ctx.HTML(consts.StatusOK, "about", utils.H{"Title": "About"})
+	})
 	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
-		data := utils.H{"Title": "Sign In", "Next": ctx.Request.Header.Get("Referer")}
+		data := utils.H{"Title": "Sign In", "Next": ctx.Query("next")}
 		ctx.HTML(consts.StatusOK, "sign-in", data)
 	})
 

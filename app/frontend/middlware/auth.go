@@ -15,7 +15,6 @@ const SessionUserId SessionUserIdKey = "user_id"
 func GlobalAuth() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		s := sessions.Default(c)
-
 		ctx = context.WithValue(ctx, SessionUserId, s.Get("user_id"))
 		c.Next(ctx)
 	}
@@ -26,7 +25,7 @@ func Auth() app.HandlerFunc {
 		s := sessions.Default(c)
 		userId := s.Get("user_id")
 		if userId == nil {
-			c.Redirect(consts.StatusFound, []byte("/login"))
+			c.Redirect(consts.StatusFound, []byte("/sign-in?next="+c.FullPath()))
 			c.Abort()
 			return
 		}
