@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 	auth "github.com/py/biz-demo/gomall/app/frontend/hertz_gen/frontend/auth"
 	"github.com/py/biz-demo/gomall/app/frontend/infra/rpc"
+	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/user"
 )
 
 type LoginService struct {

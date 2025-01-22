@@ -8,7 +8,6 @@ replace (
 )
 
 require (
-	github.com/cloudwego/biz-demo/gomall/rpc_gen v0.0.0-20250107114945-cd595cc0e3ad
 	github.com/cloudwego/hertz v0.9.5
 	github.com/cloudwego/kitex v0.12.1
 	github.com/hertz-contrib/cors v0.1.0
@@ -92,6 +91,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/nyaruka/phonenumbers v1.0.55 // indirect
+	github.com/py/biz-demo/gomall/rpc_gen v0.0.0-00010101000000-000000000000
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/tidwall/gjson v1.17.3 // indirect

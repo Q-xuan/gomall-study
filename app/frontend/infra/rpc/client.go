@@ -4,10 +4,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
+	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/user/userservice"
 )
 
 var (
