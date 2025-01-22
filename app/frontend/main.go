@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -34,7 +35,7 @@ func main() {
 	// init dal
 	// dal.Init()
 	rpc.Init()
-	
+
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 
@@ -65,8 +66,9 @@ func main() {
 }
 
 func registerMiddleware(h *server.Hertz) {
-	store, _ := redis.NewStore(10, "tcp", conf.GetConf().Redis.Address,
-		conf.GetConf().Redis.Password, []byte(os.Getenv("SESSION_SECRET")))
+	address := fmt.Sprintf(conf.GetConf().Redis.Address, os.Getenv("REDIS_HOST"))
+	password := fmt.Sprintf(conf.GetConf().Redis.Password, os.Getenv("REDIS_PASSWORD"))
+	store, _ := redis.NewStore(10, "tcp", address, password, []byte(os.Getenv("SESSION_SECRET")))
 	h.Use(sessions.New("py-shop", store))
 	// log
 	logger := hertzlogrus.NewLogger()

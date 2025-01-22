@@ -22,7 +22,7 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require golang.org/x/crypto v0.32.0 // indirect
+require golang.org/x/crypto v0.32.0
 
 require (
 	github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da // indirect

@@ -25,10 +25,9 @@ go.work.sum
 # env file
 .env
 
-app/*/conf/test
-app/*/conf/test/conf.yaml
 app/*/temp
 app/*/.env
+app/frontend/.env
 
 *.yml
 *.o
@@ -66,5 +65,6 @@ _testmain.go
 /.vscode
 /output
 *.local.yml
+app/frontend/.env
 app/frontend/.env
 app/frontend/.env
