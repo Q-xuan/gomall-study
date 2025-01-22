@@ -23,6 +23,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/router"
 	"github.com/py/biz-demo/gomall/app/frontend/conf"
+	"github.com/py/biz-demo/gomall/app/frontend/infra/rpc"
 	"github.com/py/biz-demo/gomall/app/frontend/middlware"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -32,6 +33,8 @@ func main() {
 	_ = godotenv.Load()
 	// init dal
 	// dal.Init()
+	rpc.Init()
+	
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 

@@ -11,10 +11,10 @@ hertz:
   log_max_backups: 50
 
 mysql:
-  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "%s:%s@tcp(%s:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "127.0.0.1:6379"
+  address: "120.79.149.163:6379"
   username: ""
-  password: ""
+  password: "yourpassword"
   db: 0
