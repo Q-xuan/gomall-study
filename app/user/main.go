@@ -50,7 +50,7 @@ func kitexInit() (opts []server.Option) {
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
 
-	// service find
+	// service register
 	address := fmt.Sprintf(conf.GetConf().Registry.RegistryAddress[0], os.Getenv("CONSUL_HOST"))
 	r, err := consul.NewConsulRegister(address)
 	if err != nil {

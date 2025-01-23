@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/service"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/utils"
@@ -29,6 +30,10 @@ func Login(ctx context.Context, c *app.RequestContext) {
 	}
 
 	// 重定向
+	if redirect == "" {
+		redirect = "/"
+	}
+	hlog.Info(redirect)
 	c.Redirect(consts.StatusOK, []byte(redirect))
 
 	// utils.SendSuccessResponse(ctx, c, consts.StatusOK, "done!")
@@ -66,7 +71,6 @@ func Logout(ctx context.Context, c *app.RequestContext) {
 	}
 
 	_, err = service.NewLogoutService(ctx, c).Run(&req)
-
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return

@@ -4,7 +4,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 
@@ -19,8 +18,6 @@ import (
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
 	"github.com/hertz-contrib/pprof"
-	"github.com/hertz-contrib/sessions"
-	"github.com/hertz-contrib/sessions/redis"
 	"github.com/joho/godotenv"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/router"
 	"github.com/py/biz-demo/gomall/app/frontend/conf"
@@ -50,7 +47,7 @@ func main() {
 	h.LoadHTMLGlob("template/*")
 	h.Static("/static", "./")
 
-	h.GET("/about", middlware.Auth(), func(c context.Context, ctx *app.RequestContext) {
+	h.GET("/about", func(c context.Context, ctx *app.RequestContext) {
 		ctx.HTML(consts.StatusOK, "about", utils.H{"Title": "About"})
 	})
 	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
@@ -66,10 +63,7 @@ func main() {
 }
 
 func registerMiddleware(h *server.Hertz) {
-	address := fmt.Sprintf(conf.GetConf().Redis.Address, os.Getenv("REDIS_HOST"))
-	password := fmt.Sprintf(conf.GetConf().Redis.Password, os.Getenv("REDIS_PASSWORD"))
-	store, _ := redis.NewStore(10, "tcp", address, password, []byte(os.Getenv("SESSION_SECRET")))
-	h.Use(sessions.New("py-shop", store))
+	middlware.InitRedisSession(h)
 	// log
 	logger := hertzlogrus.NewLogger()
 	hlog.SetLogger(logger)
@@ -83,7 +77,15 @@ func registerMiddleware(h *server.Hertz) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	hlog.SetOutput(asyncWriter)
+	// hlog.SetOutput(asyncWriter)
+	// 控制台输出的 WriteSyncer
+	consoleWriter := zapcore.AddSync(os.Stdout)
+
+	// 合并控制台输出和文件输出的 WriteSyncer
+	multiWriter := zapcore.NewMultiWriteSyncer(consoleWriter, asyncWriter.WS)
+
+	// 设置合并后的 WriteSyncer 为日志输出
+	hlog.SetOutput(multiWriter)
 	h.OnShutdown = append(h.OnShutdown, func(ctx context.Context) {
 		asyncWriter.Sync()
 	})
