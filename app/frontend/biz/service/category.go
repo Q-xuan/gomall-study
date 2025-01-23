@@ -21,8 +21,11 @@ func NewCategoryService(Context context.Context, RequestContext *app.RequestCont
 
 func (h *CategoryService) Run(req *category.CategoryReq) (resp map[string]any, err error) {
 	p, err := rpc.ProductClient.ListProducts(h.Context, &product.ListProductsReq{CategoryName: req.Category})
+	if err != nil {
+		return nil, err
+	}
 	return utils.H{
-		"title": "Category",
+		"Title": "Category",
 		"items": p.Products,
 	}, nil
 }

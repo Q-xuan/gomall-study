@@ -24,6 +24,7 @@ func (s *ListProductsService) Run(req *product.ListProductsReq) (resp *product.L
 	if err != nil {
 		return nil, err
 	}
+	resp = &product.ListProductsResp{}
 	for _, v1 := range c {
 		for _, v := range v1.Products {
 			resp.Products = append(resp.Products, &product.Product{

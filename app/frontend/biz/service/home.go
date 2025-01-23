@@ -24,9 +24,16 @@ func (h *HomeService) Run(req *common.Empty) (data map[string]any, err error) {
 	if err != nil {
 		return nil, err
 	}
-
+	//items := []map[string]any{
+	//	{"Name": "T-shirt-1", "Price": 100, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-1"},
+	//	{"Name": "T-shirt-2", "Price": 110, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-2"},
+	//	{"Name": "T-shirt-3", "Price": 120, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-3"},
+	//	{"Name": "T-shirt-4", "Price": 130, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-4"},
+	//	{"Name": "T-shirt-5", "Price": 140, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-5"},
+	//	{"Name": "T-shirt-6", "Price": 150, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-6"},
+	//}
 	return utils.H{
-		"title": "Hot sale",
-		"items": products.Products,
+		"Title": "Hot sale",
+		"Items": products.Products,
 	}, nil
 }
