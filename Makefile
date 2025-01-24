@@ -19,9 +19,14 @@ gen-frontend:
 .PHONY: gen-user
 gen-user:
 	@cd rpc_gen  && cwgo client --type RPC --service user --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/user.proto
-	@cd app/user && cwgo server -type RPC --service user --module $(MODULE)/app/user --pass "-use github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/user.proto
+	@cd app/user && cwgo server -type RPC --service user --module $(MODULE)/app/user --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/user.proto
 	
 .PHONY: gen-product
 gen-product:
 	@cd rpc_gen  && cwgo client --type RPC --service product --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/product.proto
-	@cd app/product && cwgo server -type RPC --service product --module $(MODULE)/app/product --pass "-use github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/product.proto
+	@cd app/product && cwgo server -type RPC --service product --module $(MODULE)/app/product --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/product.proto
+
+.PHONY: gen-cart
+gen-cart:
+	@cd rpc_gen  && cwgo client --type RPC --service cart --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/cart.proto
+	@cd app/cart && cwgo server -type RPC --service cart --module $(MODULE)/app/cart --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/cart.proto
