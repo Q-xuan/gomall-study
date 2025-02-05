@@ -7,6 +7,7 @@ import (
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/app/frontend/conf"
 	frontendUtils "github.com/py/biz-demo/gomall/app/frontend/utils"
+	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/user/userservice"
 )
@@ -14,6 +15,7 @@ import (
 var (
 	UserClient    userservice.Client
 	ProductClient productcatalogservice.Client
+	CartClient    cartservice.Client
 	once          sync.Once
 )
 
@@ -21,7 +23,17 @@ func Init() {
 	once.Do(func() {
 		InitUserClient()
 		InitProductClient()
+		InitCartClient()
 	})
+}
+
+func InitCartClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
+	frontendUtils.MustHandleErr(err)
+	opts = append(opts, client.WithResolver(r))
+	CartClient, err = cartservice.NewClient("cart", opts...)
+	frontendUtils.MustHandleErr(err)
 }
 
 func InitUserClient() {

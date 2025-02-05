@@ -33,7 +33,7 @@ func (h *HomeService) Run(req *common.Empty) (data map[string]any, err error) {
 	//	{"Name": "T-shirt-6", "Price": 150, "Picture": "https://fakeimg.pl/200x300/?text=T-shirt-6"},
 	//}
 	return utils.H{
-		"Title": "Hot sale",
-		"Items": products.Products,
+		"title": "Hot sale",
+		"items": products.Products,
 	}, nil
 }

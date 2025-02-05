@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/cloudwego/kitex/pkg/kerrors"
+	"github.com/py/biz-demo/gomall/app/cart/biz/dal/mysql"
+	"github.com/py/biz-demo/gomall/app/cart/biz/model"
 	"github.com/py/biz-demo/gomall/app/cart/rpc"
 	cart "github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/cart"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product"
@@ -26,5 +28,16 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	if r == nil || r.Product.Id == 0 {
 		return nil, kerrors.NewBizStatusError(40004, "product not found")
 	}
-	return
+
+	cartItem := &model.Cart{
+		UserId:    req.UserId,
+		ProductId: req.Item.ProductId,
+		Qty:       req.Item.Quantity,
+	}
+
+	err = model.AddItem(s.ctx, mysql.DB, cartItem)
+	if err != nil {
+		return nil, kerrors.NewBizStatusError(50000, err.Error())
+	}
+	return &cart.AddItemResp{}, nil
 }

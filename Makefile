@@ -14,7 +14,7 @@ demo-link-fix:
 
 .PHONY: gen-frontend
 gen-frontend:
-	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/category_page.proto  --service frontend --module $(MODULE)/app/frontend -I ../../idl/
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/cart_page.proto  --service frontend --module $(MODULE)/app/frontend -I ../../idl/
 
 .PHONY: gen-user
 gen-user:
