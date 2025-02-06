@@ -14,7 +14,7 @@ demo-link-fix:
 
 .PHONY: gen-frontend
 gen-frontend:
-	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/cart_page.proto  --service frontend --module $(MODULE)/app/frontend -I ../../idl/
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/checkout_page.proto  --service frontend --module $(MODULE)/app/frontend -I ../../idl/
 
 .PHONY: gen-user
 gen-user:
@@ -30,3 +30,13 @@ gen-product:
 gen-cart:
 	@cd rpc_gen  && cwgo client --type RPC --service cart --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/cart.proto
 	@cd app/cart && cwgo server -type RPC --service cart --module $(MODULE)/app/cart --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/cart.proto
+
+.PHONY: gen-payment
+gen-payment:
+	@cd rpc_gen  && cwgo client --type RPC --service payment --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/payment.proto
+	@cd app/payment && cwgo server -type RPC --service payment --module $(MODULE)/app/payment --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment.proto
+	
+.PHONY: gen-checkout
+gen-checkout:
+	@cd rpc_gen  && cwgo client --type RPC --service checkout --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/checkout.proto
+	@cd app/checkout && cwgo server -type RPC --service checkout --module $(MODULE)/app/checkout --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/checkout.proto
