@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/order/orderservice"
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
@@ -18,6 +19,7 @@ var (
 	ProductClient  productcatalogservice.Client
 	CartClient     cartservice.Client
 	CheckoutClinet checkoutservice.Client
+	OrderClient    orderservice.Client
 	once           sync.Once
 )
 
@@ -27,7 +29,17 @@ func Init() {
 		InitProductClient()
 		InitCartClient()
 		InitCheckoutClient()
+		InitOrderClient()
 	})
+}
+
+func InitOrderClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
+	frontendUtils.MustHandleErr(err)
+	opts = append(opts, client.WithResolver(r))
+	OrderClient, err = orderservice.NewClient("order", opts...)
+	frontendUtils.MustHandleErr(err)
 }
 
 func InitCheckoutClient() {

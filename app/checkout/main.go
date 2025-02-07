@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/py/biz-demo/gomall/app/checkout/infra/rpc"
 	"net"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/app/checkout/conf"
-	"github.com/py/biz-demo/gomall/app/checkout/infra/rpc"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -21,7 +21,7 @@ func main() {
 	_ = godotenv.Load()
 	// dal.Init()
 	opts := kitexInit()
-	rpc.InitClinet()
+	rpc.InitClient()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 

@@ -1,6 +1,6 @@
 module github.com/py/biz-demo/gomall/app/order
 
-go 1.23.6
+go 1.23.4
 
 replace github.com/py/biz-demo/gomall/rpc_gen => ../../rpc_gen
 

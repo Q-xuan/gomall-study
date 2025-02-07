@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	"github.com/py/biz-demo/gomall/app/cart/biz/model"
 	"os"
 
 	"github.com/py/biz-demo/gomall/app/cart/conf"
@@ -23,6 +24,11 @@ func Init() {
 			SkipDefaultTransaction: true,
 		},
 	)
+
+	if err != nil {
+		panic(err)
+	}
+	err = DB.AutoMigrate(&model.Cart{})
 	if err != nil {
 		panic(err)
 	}

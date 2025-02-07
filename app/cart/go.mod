@@ -1,6 +1,6 @@
 module github.com/py/biz-demo/gomall/app/cart
 
-go 1.23.5
+go 1.23.4
 
 replace (
 	github.com/apache/thrift => github.com/apache/thrift v0.13.0
