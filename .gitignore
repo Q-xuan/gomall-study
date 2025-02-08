@@ -27,7 +27,6 @@ go.work.sum
 
 app/*/tmp
 app/*/.env
-app/frontend/.env
 
 *.yml
 *.o

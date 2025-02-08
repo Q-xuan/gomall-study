@@ -1,10 +1,10 @@
 package types
 
 type OrderItem struct {
-	ProductID string  `json:"product_id"`
-	Picture   string  `json:"picture"`
-	Qty       uint32  `json:"qty"`
-	Cost      float32 `json:"cost"`
+	ProductName string  `json:"product_name"`
+	Picture     string  `json:"picture"`
+	Qty         uint32  `json:"qty"`
+	Cost        float32 `json:"cost"`
 }
 
 type Order struct {

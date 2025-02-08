@@ -48,6 +48,8 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 				State:   v.Consignee.State,
 				ZipCode: v.Consignee.ZipCode,
 			},
+			Items: items,
+			CreatedAt: int32(v.CreatedAt.UnixMilli()),
 		})
 
 	}
