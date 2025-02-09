@@ -4,6 +4,10 @@ package main
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/pkg/registry"
+	hertzprom "github.com/hertz-contrib/monitor-prometheus"
+	frontendUtils "github.com/py/biz-demo/gomall/app/frontend/utils"
+	"github.com/py/biz-demo/gomall/common/mtl"
 	"os"
 	"time"
 
@@ -27,14 +31,33 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var (
+	ServiceName  = frontendUtils.ServiceName
+	RegistryAddr = conf.GetConf().Hertz.RegistryAddr
+)
+
 func main() {
 	_ = godotenv.Load()
+	metric, info := mtl.InitMetric(ServiceName, conf.GetConf().Hertz.MetricsPort, RegistryAddr)
+	defer func(metric registry.Registry, info *registry.Info) {
+		err := metric.Deregister(info)
+		if err != nil {
+			panic(err)
+		}
+	}(metric, info)
 	// init dal
 	// dal.Init()
 	rpc.Init()
-
 	address := conf.GetConf().Hertz.Address
-	h := server.New(server.WithHostPorts(address))
+	h := server.New(server.WithHostPorts(address), server.WithTracer(
+		hertzprom.NewServerTracer(
+			"",
+			"",
+			hertzprom.WithRegistry(mtl.Registry),
+			hertzprom.WithDisableServer(true),
+		),
+	),
+	)
 
 	registerMiddleware(h)
 

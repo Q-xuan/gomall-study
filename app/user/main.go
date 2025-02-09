@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/py/biz-demo/gomall/common/mtl"
 	"net"
 	"time"
 
@@ -16,15 +17,16 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
 var (
 	ServiceName  = conf.GetConf().Kitex.Service
 	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
 )
 
-
 func main() {
 	//load env
 	err := godotenv.Load()
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	if err != nil {
 		klog.Error(err.Error())
 	}
@@ -56,7 +58,6 @@ func kitexInit() (opts []server.Option) {
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
-
 
 	// klog
 	logger := kitexlogrus.NewLogger()
