@@ -2,14 +2,19 @@ package service
 
 import (
 	"context"
+
+	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/email"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/nats-io/nats.go"
+	"github.com/py/biz-demo/gomall/app/checkout/infra/mq"
 	"github.com/py/biz-demo/gomall/app/checkout/infra/rpc"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/checkout"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/order"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/payment"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product"
+	"google.golang.org/protobuf/proto"
 )
 
 type CheckoutService struct {
@@ -22,7 +27,7 @@ func NewCheckoutService(ctx context.Context) *CheckoutService {
 // Run create note info
 func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.CheckoutResp, err error) {
 	// Finish your business logic.
-	cartResp, err := rpc.CardClient.GetCart(s.ctx, &cart.GetCartReq{UserId: req.UserId})
+	cartResp, err := rpc.CartClient.GetCart(s.ctx, &cart.GetCartReq{UserId: req.UserId})
 	if err != nil {
 		return nil, kerrors.NewGRPCBizStatusError(5005001, err.Error())
 	}
@@ -91,7 +96,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		},
 	}
 
-	_, err = rpc.CardClient.EmptyCart(s.ctx, &cart.EmptyCartReq{UserId: req.UserId})
+	_, err = rpc.CartClient.EmptyCart(s.ctx, &cart.EmptyCartReq{UserId: req.UserId})
 	if err != nil {
 		return nil, err
 	}
@@ -100,6 +105,19 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		return nil, err
 	}
+
+	data, _ := proto.Marshal(&email.EmailReq{
+		From:        "form@example.com",
+		To:          req.Email,
+		ContentType: "text/plain",
+		Subject:     "You have just created an order in the CloudWeGo shop",
+		Content:     "You have just created an order in the CloudWeGo shop",
+	})
+
+	msg := &nats.Msg{Subject: "email", Data: data}
+
+	mq.Nc.PublishMsg(msg)
+
 	klog.Info(paymentResp)
 
 	resp = &checkout.CheckoutResp{

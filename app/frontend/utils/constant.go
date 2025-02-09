@@ -1,5 +1,6 @@
 package utils
 
+const ServiceName = "frontend"
 
 type SessionUserIdKey string
 

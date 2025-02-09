@@ -1,9 +1,12 @@
 module github.com/py/biz-demo/gomall/app/user
 
-go 1.22.3
+go 1.23.4
+
+toolchain go1.23.6
 
 replace (
 	github.com/apache/thrift => github.com/apache/thrift v0.13.0
+	github.com/py/biz-demo/gomall/common => ../../common
 	github.com/py/biz-demo/gomall/rpc_gen => ../../rpc_gen
 )
 
@@ -22,7 +25,20 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require golang.org/x/crypto v0.32.0
+require (
+	github.com/py/biz-demo/gomall/common v0.0.0-00010101000000-000000000000
+	golang.org/x/crypto v0.32.0
+)
+
+require (
+	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/kitex-contrib/monitor-prometheus v0.2.0 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
+	github.com/prometheus/client_golang v1.14.0 // indirect
+	github.com/prometheus/client_model v0.3.0 // indirect
+	github.com/prometheus/common v0.37.0 // indirect
+	github.com/prometheus/procfs v0.8.0 // indirect
+)
 
 require (
 	github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da // indirect

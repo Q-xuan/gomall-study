@@ -4,6 +4,7 @@ go 1.23.4
 
 replace (
 	github.com/apache/thrift => github.com/apache/thrift v0.13.0
+	github.com/py/biz-demo/gomall/common => ../../common
 	github.com/py/biz-demo/gomall/rpc_gen => ../../rpc_gen
 )
 
@@ -15,8 +16,8 @@ require (
 	github.com/hertz-contrib/logger/accesslog v0.0.0-20241107070745-e4ce8c54dd97
 	github.com/hertz-contrib/logger/logrus v1.0.1
 	github.com/hertz-contrib/pprof v0.1.2
-	github.com/kitex-contrib/registry-consul v0.1.0
 	github.com/kr/pretty v0.3.1
+	github.com/py/biz-demo/gomall/common v0.0.0-00010101000000-000000000000
 	github.com/redis/go-redis/v9 v9.7.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/protobuf v1.36.3
@@ -50,6 +51,7 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/jhump/protoreflect v1.8.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kitex-contrib/registry-consul v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -78,7 +80,7 @@ require (
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/golang/protobuf v1.5.4
 	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	github.com/gorilla/context v1.1.2 // indirect

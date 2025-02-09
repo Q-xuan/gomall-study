@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net"
-	"os"
 	"time"
 
 	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user/userservice"
@@ -13,12 +10,17 @@ import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/app/user/biz/dal"
 	"github.com/py/biz-demo/gomall/app/user/conf"
+	"github.com/py/biz-demo/gomall/common/serversuite"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+)
+
 
 func main() {
 	//load env
@@ -45,18 +47,16 @@ func kitexInit() (opts []server.Option) {
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
 
+	// register service
+	opts = append(opts, server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
+	}))
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
 
-	// service register
-	address := fmt.Sprintf(conf.GetConf().Registry.RegistryAddress[0], os.Getenv("CONSUL_HOST"))
-	r, err := consul.NewConsulRegister(address)
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()

@@ -4,15 +4,18 @@ import (
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
-	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/app/cart/conf"
 	cartUtils "github.com/py/biz-demo/gomall/app/cart/utils"
+	"github.com/py/biz-demo/gomall/common/clientsuite"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
 )
 
 var (
 	ProductClient productcatalogservice.Client
 	once          sync.Once
+	ServiceName   = conf.GetConf().Kitex.Service
+	RegistryAddr  = conf.GetConf().Registry.RegistryAddress[0]
+	err           error
 )
 
 func InitClient() {
@@ -21,10 +24,13 @@ func InitClient() {
 	})
 }
 
-
 func InitProductClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	cartUtils.MustHandleErr(err)
-	ProductClient, err = productcatalogservice.NewClient("product", client.WithResolver(r))
+	opt := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
+	ProductClient, err = productcatalogservice.NewClient("product", opt...)
 	cartUtils.MustHandleErr(err)
 }

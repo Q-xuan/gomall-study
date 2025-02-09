@@ -1,28 +1,39 @@
 package rpc
 
 import (
-	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/order/orderservice"
 	"sync"
 
+	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/order/orderservice"
+
 	"github.com/cloudwego/kitex/client"
-	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/py/biz-demo/gomall/app/checkout/conf"
+	checkoututils "github.com/py/biz-demo/gomall/app/checkout/utils"
+	"github.com/py/biz-demo/gomall/common/clientsuite"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/payment/paymentservice"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
 )
 
 var (
-	CardClient    cartservice.Client
+	CartClient    cartservice.Client
 	ProductClient productcatalogservice.Client
 	PaymentClient paymentservice.Client
 	OrderClient   orderservice.Client
 	once          sync.Once
 	err           error
+	RegistryAddr  string
+	ServiceName   string
+	commonSuite   client.Option
 )
 
 func InitClient() {
 	once.Do(func() {
+		RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+		ServiceName = conf.GetConf().Kitex.Service
+		commonSuite = client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		})
 		initCartClient()
 		initProductClient()
 		initPaymentClient()
@@ -30,46 +41,22 @@ func InitClient() {
 	})
 }
 
-func initOrderClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		panic(err)
-	}
-	OrderClient, err = orderservice.NewClient("order", client.WithResolver(r))
-	if err != nil {
-		panic(err)
-	}
+func initProductClient() {
+	ProductClient, err = productcatalogservice.NewClient("product", commonSuite)
+	checkoututils.MustHandleError(err)
 }
 
 func initCartClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		panic(err)
-	}
-	CardClient, err = cartservice.NewClient("cart", client.WithResolver(r))
-	if err != nil {
-		panic(err)
-	}
-}
-
-func initProductClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		panic(err)
-	}
-	ProductClient, err = productcatalogservice.NewClient("product", client.WithResolver(r))
-	if err != nil {
-		panic(err)
-	}
+	CartClient, err = cartservice.NewClient("cart", commonSuite)
+	checkoututils.MustHandleError(err)
 }
 
 func initPaymentClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		panic(err)
-	}
-	PaymentClient, err = paymentservice.NewClient("payment", client.WithResolver(r))
-	if err != nil {
-		panic(err)
-	}
+	PaymentClient, err = paymentservice.NewClient("payment", commonSuite)
+	checkoututils.MustHandleError(err)
+}
+
+func initOrderClient() {
+	OrderClient, err = orderservice.NewClient("order", commonSuite)
+	checkoututils.MustHandleError(err)
 }

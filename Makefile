@@ -45,3 +45,9 @@ gen-checkout:
 gen-order:
 	@cd rpc_gen  && cwgo client --type RPC --service order --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/order.proto
 	@cd app/order && cwgo server -type RPC --service order --module $(MODULE)/app/order --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/order.proto
+
+	
+.PHONY: gen-email
+gen-email:
+	@cd rpc_gen  && cwgo client --type RPC --service email --module $(MODULE)/rpc_gen --I ../idl --idl ../idl/email.proto
+	@cd app/email && cwgo server -type RPC --service email --module $(MODULE)/app/email --pass "-use github.com/py/biz-demo/gomall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/email.proto
