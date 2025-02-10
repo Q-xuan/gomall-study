@@ -46,6 +46,42 @@ services:
       - ./deploy/config/promtail.yml:/etc/promtail/config.yml
       - ./app/frontend/log:/logs/frontend
     command: -config.file=/etc/promtail/config.yml
+  frontend:
+    build: 
+      context: .
+      dockerfile: ./deploy/Dockerfile.frontend
+      args:
+        -v=v1
+    ports:
+      - "8090:8090"
+    environment:
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
+      - OTEL_EXPORTER_OTLP_TRACES_INSECURE=true
+      - SESSION_SECRET=WDGCYESAAA
+      # - GO_ENV=test
+    depends_on:
+      - consul
+      - redis
+    volumes:
+      - ./app/frontend/conf/test:/opt/gomall/frontend/conf/test
+  product:
+    build: 
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=product
+    ports:
+      - "8090:8090"
+    environment:
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
+      - OTEL_EXPORTER_OTLP_TRACES_INSECURE=true
+      - SESSION_SECRET=WDGCYESAAA
+      # - GO_ENV=test
+    depends_on:
+      - consul
+      - redis
+    volumes:
+      - ./app/frontend/conf/test:/opt/gomall/frontend/conf/test
   # mysql:
   #   image: 'mysql:latest'
   #   ports:
@@ -54,7 +90,7 @@ services:
   #     - MYSQL_ROOT_PASSWORD=root
   #     - MYSQL_DATABASE=product
   #     - MYSQL_DATABASE=user
-  # redis:
-  #      image: 'redis:latest'
-  #      ports:
-  #         - "6379:6379"
+  redis:
+       image: 'redis:latest'
+       ports:
+          - "6379:6379"

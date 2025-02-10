@@ -1,7 +1,6 @@
 package middlware
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -10,10 +9,11 @@ import (
 	"github.com/py/biz-demo/gomall/app/frontend/conf"
 )
 
-
-func InitRedisSession(h * server.Hertz){
-	address := fmt.Sprintf(conf.GetConf().Redis.Address, os.Getenv("REDIS_HOST"))
-	password := fmt.Sprintf(conf.GetConf().Redis.Password, os.Getenv("REDIS_PASSWORD"))
-	store, _ := redis.NewStore(10, "tcp", address, password, []byte(os.Getenv("SESSION_SECRET")))
+func InitRedisSession(h *server.Hertz) {
+	address := conf.GetConf().Redis.Address
+	store, err := redis.NewStore(100, "tcp", address, "", []byte(os.Getenv("SESSION_SECRET")))
+	if err != nil {
+		panic(err)
+	}
 	h.Use(sessions.New("py-shop", store))
 }
