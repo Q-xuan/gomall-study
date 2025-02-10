@@ -2,13 +2,15 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/py/biz-demo/gomall/app/cart/biz/model"
 	"os"
+
+	"github.com/py/biz-demo/gomall/app/cart/biz/model"
 
 	"github.com/py/biz-demo/gomall/app/cart/conf"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 var (
@@ -25,9 +27,14 @@ func Init() {
 		},
 	)
 
+	if err := DB.Use(tracing.NewPlugin(tracing.WithoutMetrics())); err != nil {
+		panic(err)
+	}
+
 	if err != nil {
 		panic(err)
 	}
+
 	err = DB.AutoMigrate(&model.Cart{})
 	if err != nil {
 		panic(err)

@@ -4,12 +4,14 @@ package main
 
 import (
 	"context"
-	"github.com/cloudwego/kitex/pkg/registry"
-	hertzprom "github.com/hertz-contrib/monitor-prometheus"
-	frontendUtils "github.com/py/biz-demo/gomall/app/frontend/utils"
-	"github.com/py/biz-demo/gomall/common/mtl"
 	"os"
 	"time"
+
+	"github.com/cloudwego/kitex/pkg/registry"
+	hertzprom "github.com/hertz-contrib/monitor-prometheus"
+	hertztracing "github.com/hertz-contrib/obs-opentelemetry/tracing"
+	frontendUtils "github.com/py/biz-demo/gomall/app/frontend/utils"
+	"github.com/py/biz-demo/gomall/common/mtl"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
@@ -21,6 +23,7 @@ import (
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
+	hertzobslogrus "github.com/hertz-contrib/obs-opentelemetry/logging/logrus"
 	"github.com/hertz-contrib/pprof"
 	"github.com/joho/godotenv"
 	"github.com/py/biz-demo/gomall/app/frontend/biz/router"
@@ -45,19 +48,27 @@ func main() {
 			panic(err)
 		}
 	}(metric, info)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	// init dal
 	// dal.Init()
 	rpc.Init()
 	address := conf.GetConf().Hertz.Address
-	h := server.New(server.WithHostPorts(address), server.WithTracer(
-		hertzprom.NewServerTracer(
-			"",
-			"",
-			hertzprom.WithRegistry(mtl.Registry),
-			hertzprom.WithDisableServer(true),
+
+	tracer, cfg := hertztracing.NewServerTracer()
+
+	h := server.New(server.WithHostPorts(address),
+		server.WithTracer(
+			hertzprom.NewServerTracer(
+				"",
+				"",
+				hertzprom.WithRegistry(mtl.Registry),
+				hertzprom.WithDisableServer(true),
+			),
 		),
-	),
+		tracer,
 	)
+	h.Use(hertztracing.ServerMiddleware(cfg))
 
 	registerMiddleware(h)
 
@@ -71,6 +82,7 @@ func main() {
 	h.Static("/static", "./")
 
 	h.GET("/about", func(c context.Context, ctx *app.RequestContext) {
+		hlog.CtxInfof(c, "CloudWeGo shop about page")
 		ctx.HTML(consts.StatusOK, "about", utils.H{"Title": "About"})
 	})
 	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
@@ -88,9 +100,15 @@ func main() {
 func registerMiddleware(h *server.Hertz) {
 	middlware.InitRedisSession(h)
 	// log
-	logger := hertzlogrus.NewLogger()
+	logger := hertzobslogrus.NewLogger(hertzobslogrus.WithLogger(hertzlogrus.NewLogger().Logger()))
 	hlog.SetLogger(logger)
 	hlog.SetLevel(conf.LogLevel())
+	var flushInterval time.Duration
+	if os.Getenv("GO_ENV") == "online" {
+		flushInterval = time.Minute
+	} else {
+		flushInterval = time.Second
+	}
 	asyncWriter := &zapcore.BufferedWriteSyncer{
 		WS: zapcore.AddSync(&lumberjack.Logger{
 			Filename:   conf.GetConf().Hertz.LogFileName,
@@ -98,7 +116,7 @@ func registerMiddleware(h *server.Hertz) {
 			MaxBackups: conf.GetConf().Hertz.LogMaxBackups,
 			MaxAge:     conf.GetConf().Hertz.LogMaxAge,
 		}),
-		FlushInterval: time.Minute,
+		FlushInterval: flushInterval,
 	}
 	// hlog.SetOutput(asyncWriter)
 	// 控制台输出的 WriteSyncer

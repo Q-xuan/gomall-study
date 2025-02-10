@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -28,6 +29,8 @@ var (
 func main() {
 	_ = godotenv.Load()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	// dal.Init()
 	opts := kitexInit()
 	rpc.InitClient()

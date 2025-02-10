@@ -14,6 +14,8 @@ import (
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/order"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/payment"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/product"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -114,8 +116,8 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		Content:     "You have just created an order in the CloudWeGo shop",
 	})
 
-	msg := &nats.Msg{Subject: "email", Data: data}
-
+	msg := &nats.Msg{Subject: "email", Data: data, Header: make(nats.Header)}
+	otel.GetTextMapPropagator().Inject(s.ctx, propagation.HeaderCarrier(msg.Header))
 	mq.Nc.PublishMsg(msg)
 
 	klog.Info(paymentResp)

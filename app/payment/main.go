@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -9,10 +10,10 @@ import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	"github.com/py/biz-demo/gomall/common/mtl"
-	"github.com/py/biz-demo/gomall/common/serversuite"
 	"github.com/py/biz-demo/gomall/app/payment/biz/dal"
 	"github.com/py/biz-demo/gomall/app/payment/conf"
+	"github.com/py/biz-demo/gomall/common/mtl"
+	"github.com/py/biz-demo/gomall/common/serversuite"
 	"github.com/py/biz-demo/gomall/rpc_gen/kitex_gen/payment/paymentservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -23,11 +24,11 @@ var (
 	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
 )
 
-
 func main() {
 	_ = godotenv.Load()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
-
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	dal.Init()
 	opts := kitexInit()
 

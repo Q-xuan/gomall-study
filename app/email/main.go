@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/py/biz-demo/gomall/common/mtl"
-	"github.com/py/biz-demo/gomall/common/serversuite"
+	"context"
 	"net"
 	"time"
+
+	"github.com/py/biz-demo/gomall/common/mtl"
+	"github.com/py/biz-demo/gomall/common/serversuite"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -26,7 +28,8 @@ var (
 func main() {
 	mq.Init()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
-
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	consumer.Init()
 	opts := kitexInit()
 

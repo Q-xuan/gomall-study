@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/py/biz-demo/gomall/common/mtl"
+	"context"
 	"net"
 	"time"
+
+	"github.com/py/biz-demo/gomall/common/mtl"
 
 	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -27,6 +29,8 @@ func main() {
 	//load env
 	err := godotenv.Load()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	if err != nil {
 		klog.Error(err.Error())
 	}
