@@ -1,6 +1,6 @@
 hertz:
   service: "frontend"
-  address: ":8080"
+  address: ":8090"
   enable_pprof: true
   enable_gzip: true
   enable_access_log: true
@@ -9,13 +9,14 @@ hertz:
   log_max_size: 10
   log_max_age: 3
   log_max_backups: 50
-  registry_addr: "127.0.0.1:8500"
+  registry_addr: "consul:8500"
+  metrics_port: ":9998"
 
 mysql:
   dsn: "%s:%s@tcp(%s:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "%s:6379"
+  address: "redis:6379"
   username: ""
-  password: "%s"
+  password: ""
   db: 0

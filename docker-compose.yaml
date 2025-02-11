@@ -47,41 +47,147 @@ services:
       - ./app/frontend/log:/logs/frontend
     command: -config.file=/etc/promtail/config.yml
   frontend:
-    build: 
+    build:
       context: .
       dockerfile: ./deploy/Dockerfile.frontend
       args:
-        -v=v1
+        - v=v1
     ports:
       - "8090:8090"
     environment:
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
-      - OTEL_EXPORTER_OTLP_TRACES_INSECURE=true
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
       - SESSION_SECRET=WDGCYESAAA
-      # - GO_ENV=test
+      - GO_ENV=dev
     depends_on:
-      - consul
-      - redis
+      consul:
+        condition: service_started
+      redis:
+        condition: service_started
     volumes:
-      - ./app/frontend/conf/test:/opt/gomall/frontend/conf/test
+      - ./app/frontend/conf/dev:/opt/gomall/frontend/conf/dev
   product:
-    build: 
+    build:
       context: .
       dockerfile: ./deploy/Dockerfile.svc
       args:
         - SVC=product
-    ports:
-      - "8090:8090"
+    env_file:
+      - ./app/product/.env
     environment:
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
-      - OTEL_EXPORTER_OTLP_TRACES_INSECURE=true
-      - SESSION_SECRET=WDGCYESAAA
-      # - GO_ENV=test
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
     depends_on:
-      - consul
-      - redis
+      consul:
+        condition: service_started
     volumes:
-      - ./app/frontend/conf/test:/opt/gomall/frontend/conf/test
+      - ./app/product/conf/dev:/opt/gomall/product/conf/dev
+  user:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=user
+    env_file:
+      - ./app/user/.env
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/user/conf/dev:/opt/gomall/user/conf/dev
+  cart:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=cart
+    env_file:
+      - ./app/cart/.env
+      # - GO_ENV=test
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/cart/conf/dev:/opt/gomall/cart/conf/dev
+  checkout:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=checkout
+    env_file:
+      - ./app/checkout/.env
+      # - GO_ENV=test
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/checkout/conf/dev:/opt/gomall/checkout/conf/dev
+  email:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=email
+      # - GO_ENV=test
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/email/conf/dev:/opt/gomall/email/conf/dev
+  order:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=order
+    env_file:
+      - ./app/order/.env
+      # - GO_ENV=test
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/order/conf/dev:/opt/gomall/order/conf/dev
+  payment:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile.svc
+      args:
+        - SVC=payment
+    env_file:
+      - ./app/payment/.env
+      # - GO_ENV=test
+    environment:
+      - GO_ENV=dev
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=jaeger-all-in-one:4317
+      - TEL_EXPORTER_OTLP_TRACES_INSECURE=true
+    depends_on:
+      consul:
+        condition: service_started
+    volumes:
+      - ./app/payment/conf/dev:/opt/gomall/payment/conf/dev
   # mysql:
   #   image: 'mysql:latest'
   #   ports:
@@ -91,6 +197,6 @@ services:
   #     - MYSQL_DATABASE=product
   #     - MYSQL_DATABASE=user
   redis:
-       image: 'redis:latest'
-       ports:
-          - "6379:6379"
+    image: 'redis:latest'
+    ports:
+      - "6379:6379"
