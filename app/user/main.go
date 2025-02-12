@@ -27,19 +27,16 @@ var (
 
 func main() {
 	//load env
-	err := godotenv.Load()
+	_ = godotenv.Load()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	p := mtl.InitTracing(ServiceName)
 	defer p.Shutdown(context.Background())
-	if err != nil {
-		klog.Error(err.Error())
-	}
 	dal.Init()
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
 
-	err = svr.Run()
+	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
 	}

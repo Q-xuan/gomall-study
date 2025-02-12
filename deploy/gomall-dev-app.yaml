@@ -114,6 +114,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"
           - name: MYSQL_HOST
             value: "mysql-svc"
           - name: MYSQL_USER
@@ -160,6 +164,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"            
       volumes:
       - name: "checkout-config"
         configMap:
@@ -196,6 +204,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"            
       volumes:
       - name: "email-config"
         configMap:
@@ -231,6 +243,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"            
           - name: MYSQL_HOST
             value: "mysql-svc"
           - name: MYSQL_USER
@@ -275,6 +291,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"            
           - name: MYSQL_HOST
             value: "mysql-svc"
           - name: MYSQL_USER
@@ -319,6 +339,10 @@ spec:
         env:
           - name: GO_ENV
             value: "dev"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: "jaeger-svc:4317"
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"
           - name: MYSQL_HOST
             value: "mysql-svc"
           - name: MYSQL_USER
