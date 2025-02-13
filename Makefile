@@ -63,6 +63,7 @@ tidy-all:
 	cd app/user && go mod tidy
 	cd common && go mod tidy
 
+
 @PHONY: build-frontend
 build-frontend:
 	docker build -f ./deploy/Dockerfile.frontend -t frontend:${v} .
@@ -81,3 +82,25 @@ build-all:
 	docker build -f ./deploy/Dockerfile.svc -t payment:${v} --build-arg SVC=payment .
 	docker build -f ./deploy/Dockerfile.svc -t product:${v} --build-arg SVC=product .
 	docker build -f ./deploy/Dockerfile.svc -t user:${v} --build-arg SVC=user .
+
+.PHONY:	forward
+forward:
+	kubectl port-forward --address 0.0.0.0  pod/${name} 8090:8090
+	
+.PHONY: kind-reload-gomalldev
+kind-reload-gomalldev:
+	kind delete cluster --name gomall-dev
+	kind create cluster --config ./deploy/gomall-dev-cluster.yaml
+	kubectl apply -f ./deploy/gomall-dev-base.yaml
+	kubectl apply -f ./deploy/gomall-dev-app.yaml
+	kind load docker-image --name gomall-dev frontend:v1.1.1 product:v1.1.1 cart:v1.1.1 checkout:v1.1.1 email:v1.1.1 order:v1.1.1 payment:v1.1.1 user:v1.1.1
+	kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+	kubectl wait --namespace ingress-nginx \
+	--for=condition=ready pod \
+	--selector=app.kubernetes.io/component=controller \
+	--timeout=90s
+	kubectl apply -f ./deploy/ingress.yaml
+
+.PHONY: k8s-realod-gomall
+k8s-realod-gomall:
+	kubectl delete 

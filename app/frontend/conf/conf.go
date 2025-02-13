@@ -1,12 +1,14 @@
 package conf
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/kitex-contrib/config-consul/consul"
 	"github.com/kr/pretty"
 	"gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"

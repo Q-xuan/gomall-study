@@ -25,4 +25,7 @@
 > https://kind.sigs.k8s.io/
 
 ### TODO
-> https://kind.sigs.k8s.io/docs/user/ingress/ 配置生产环境入口
+> https://kind.sigs.k8s.io/docs/user/ingress/ 配置生产环境入
+> howhttps.works
+> acme protocol 开放标准协议
+> https://letsencrypt.org/zh-tw/docs/challenge-types/

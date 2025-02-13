@@ -9,6 +9,16 @@ nodes:
     containerPath: /opt/gomall/db/sql/ini
   - hostPath: ./deploy/config
     containerPath: /opt/gomall/deploy/config
+  extraPortMappings:
+    - containerPort: 8090
+      hostPort: 8090
+      protocol: TCP
+    - containerPort: 80
+      hostPort: 80
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      protocol: TCP
 
 - role: worker
   image: kindest/node:v1.30.0

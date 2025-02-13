@@ -10,6 +10,7 @@ replace (
 require (
 	github.com/cloudwego/kitex v0.12.1
 	github.com/joho/godotenv v1.5.1
+	github.com/kitex-contrib/config-consul v0.1.4
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241120035129-55da83caab1b
 	github.com/kr/pretty v0.3.1
 	github.com/py/biz-demo/gomall/common v0.0.0-00010101000000-000000000000
@@ -17,7 +18,6 @@ require (
 	github.com/redis/go-redis/v9 v9.7.0
 	go.uber.org/zap v1.27.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gopkg.in/validator.v2 v2.0.1
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
@@ -119,4 +119,5 @@ require (
 	google.golang.org/grpc v1.63.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	sigs.k8s.io/yaml v1.4.0 // indirect
 )
